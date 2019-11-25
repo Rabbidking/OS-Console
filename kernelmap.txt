@@ -1,0 +1,98 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000000400000                __image_base__ = 0x400000
+                0x0000000000000000                __dll__ = 0x0
+                0x0000000000400000                ___ImageBase = 0x400000
+                0x0000000000001000                __section_alignment__ = 0x1000
+                0x0000000000000200                __file_alignment__ = 0x200
+                0x0000000000000004                __major_os_version__ = 0x4
+                0x0000000000000000                __minor_os_version__ = 0x0
+                0x0000000000000001                __major_image_version__ = 0x1
+                0x0000000000000000                __minor_image_version__ = 0x0
+                0x0000000000000004                __major_subsystem_version__ = 0x4
+                0x0000000000000000                __minor_subsystem_version__ = 0x0
+                0x0000000000000003                __subsystem__ = 0x3
+                0x0000000000200000                __size_of_stack_reserve__ = 0x200000
+                0x0000000000001000                __size_of_stack_commit__ = 0x1000
+                0x0000000000100000                __size_of_heap_reserve__ = 0x100000
+                0x0000000000001000                __size_of_heap_commit__ = 0x1000
+                0x0000000000000000                __loader_flags__ = 0x0
+                0x0000000000000000                __dll_characteristics__ = 0x0
+                0x0000000000100000                . = 0x100000
+
+.text           0x0000000000100000     0x9200
+                0x0000000000100000                _textStart = .
+ *(.text)
+ .text          0x0000000000100000       0x24 kernelasm.o
+ .text          0x0000000000100024      0x174 kernelc.o
+                0x0000000000100024                sweet
+                0x0000000000100141                clearBss
+                0x0000000000100164                kmain
+ .text          0x0000000000100198       0xb0 util.o
+                0x0000000000100198                inb
+                0x00000000001001b4                outb
+                0x00000000001001d3                kmemset
+                0x0000000000100206                kmemcpy
+ .text          0x0000000000100248      0xc84 kprintf.o
+                0x00000000001002e8                kprintf
+                0x0000000000100335                ksprintf
+ .text          0x0000000000100ecc      0x6a8 console.o
+                0x0000000000100ecc                serialOut
+                0x0000000000100f09                RGBToBytes
+                0x00000000001010ed                console_init
+                0x0000000000101128                drawCharacter
+                0x0000000000101243                setPixel
+                0x0000000000101291                clearScreen
+                0x00000000001012e7                scroll
+                0x000000000010136e                console_putc
+ *(.rodata*)
+ *(.rdata*)
+ .rdata         0x0000000000101574     0x1048 kernelc.o
+ .rdata$zzz     0x00000000001025bc       0x14 kernelc.o
+ .rdata$zzz     0x00000000001025d0       0x14 util.o
+ .rdata         0x00000000001025e4      0x1c4 kprintf.o
+ .rdata$zzz     0x00000000001027a8       0x14 kprintf.o
+ *fill*         0x00000000001027bc        0x4 
+ .rdata         0x00000000001027c0     0x2000 console.o
+ .rdata$zzz     0x00000000001047c0       0x14 console.o
+                0x00000000001047d4                _textEnd = .
+                0x0000000000105000                . = ALIGN (ABSOLUTE (.), 0x1000)
+ *fill*         0x00000000001047d4      0x82c 
+                0x0000000000105000                _dataStart = .
+ *(.data)
+ .data          0x0000000000105000     0x4000 kernelasm.o
+ .data          0x0000000000109000        0xc kernelc.o
+                0x0000000000109000                decl
+                0x0000000000109004                decl2
+                0x0000000000109008                phrase
+ .data          0x000000000010900c        0x0 util.o
+ .data          0x000000000010900c        0x0 kprintf.o
+ .data          0x000000000010900c        0x0 console.o
+                0x000000000010900c                _dataEnd = .
+                0x000000000010900c                _bssStart = .
+ *(COMMON)
+ *(.bss)
+ .bss           0x000000000010900c        0x0 kernelasm.o
+ .bss           0x000000000010900c        0x0 kernelc.o
+ .bss           0x000000000010900c        0x0 util.o
+ .bss           0x000000000010900c        0x0 kprintf.o
+ .bss           0x000000000010900c       0x2c console.o
+                0x000000000010900c                cc
+                0x0000000000109010                cr
+                0x0000000000109038                _bssEnd = .
+
+/DISCARD/
+ *(.eh_frame)
+ *(.comment)
+LOAD kernelasm.o
+LOAD kernelc.o
+LOAD util.o
+LOAD kprintf.o
+LOAD console.o
+OUTPUT(kernel.tmp pei-i386)
